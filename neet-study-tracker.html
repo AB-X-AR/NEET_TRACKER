@@ -464,6 +464,11 @@
     <div class="container">
         <!-- Subject Selection Page -->
         <div id="home-page" class="page-section active">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button class="btn" onclick="goToProgress()" style="background: linear-gradient(135deg, #d4af37 0%, #cd7f32 100%);">
+                    📊 View Progress Dashboard
+                </button>
+            </div>
             <div class="subjects-grid">
                 <div class="subject-card botany" onclick="selectSubject('botany')">
                     <span class="subject-icon">🌿</span>
@@ -561,6 +566,7 @@
 
                 <div style="text-align: center;">
                     <button class="btn back-btn" onclick="goToHome()">Back to Home</button>
+                    <button class="btn" onclick="resetProgress()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); margin-left: 1rem;">🔄 Reset All Progress</button>
                 </div>
             </div>
         </div>
@@ -1042,6 +1048,23 @@
             document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
             document.getElementById('home-page').classList.add('active');
             selectedChapters = [];
+        }
+
+        function goToProgress() {
+            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
+            document.getElementById('progress-page').classList.add('active');
+            renderProgress();
+        }
+
+        function resetProgress() {
+            if (confirm('⚠️ Are you sure you want to reset ALL your progress?\n\nThis will permanently delete:\n• All study sessions\n• All chapter ratings\n• All progress data\n\nThis action cannot be undone!')) {
+                if (confirm('🔴 Final confirmation: Delete everything?')) {
+                    localStorage.removeItem('studyProgress');
+                    studyProgress = [];
+                    alert('✅ All progress has been reset!');
+                    renderProgress();
+                }
+            }
         }
 
         function goToChapters() {
