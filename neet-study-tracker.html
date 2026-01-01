@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET 2026 Study Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --botany-color: #2d5016;
+            --zoology-color: #8b4513;
+            --physics-color: #1a4d7a;
+            --chemistry-color: #6b2d5c;
+            --bg-primary: #faf8f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c2c2c;
+            --text-secondary: #6b6b6b;
+            --gold: #d4af37;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #1a4d7a 0%, #2d5016 100%);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .subject-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            transition: all 0.4s ease;
+        }
+
+        .subject-card.botany::before { background: var(--botany-color); }
+        .subject-card.zoology::before { background: var(--zoology-color); }
+        .subject-card.physics::before { background: var(--physics-color); }
+        .subject-card.chemistry::before { background: var(--chemistry-color); }
+
+        .subject-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .subject-card.botany:hover { border-color: var(--botany-color); }
+        .subject-card.zoology:hover { border-color: var(--zoology-color); }
+        .subject-card.physics:hover { border-color: var(--physics-color); }
+        .subject-card.chemistry:hover { border-color: var(--chemistry-color); }
+
+        .subject-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .subject-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .subject-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chapter-selection {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .chapter-selection h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .chapter-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .chapter-item:hover {
+            background: #f0ede7;
+            border-color: currentColor;
+        }
+
+        .chapter-item.selected {
+            background: linear-gradient(135deg, rgba(26,77,122,0.1) 0%, rgba(45,80,22,0.1) 100%);
+            border-color: currentColor;
+        }
+
+        .chapter-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            accent-color: var(--physics-color);
+            cursor: pointer;
+        }
+
+        .chapter-label {
+            font-weight: 400;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .class-tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(0,0,0,0.1);
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1a4d7a 0%, #2d5016 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--text-secondary);
+            margin-right: 1rem;
+        }
+
+        .survey-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .survey-question {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        .star {
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #ddd;
+            position: relative;
+        }
+
+        .star:hover,
+        .star.active {
+            color: var(--gold);
+            transform: scale(1.2) rotate(5deg);
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+        }
+
+        .star:hover ~ .star {
+            color: #ddd;
+            transform: none;
+        }
+
+        .rating-label {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .progress-page {
+            animation: fadeIn 0.6s ease;
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .progress-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 4px solid var(--gold);
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--physics-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ranking-section {
+            margin-bottom: 3rem;
+        }
+
+        .ranking-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .ranking-list {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(90deg, var(--item-color) 0%, transparent 100%);
+            border-radius: 12px;
+            border-left: 4px solid var(--item-color);
+            transition: all 0.3s ease;
+            opacity: var(--item-opacity);
+        }
+
+        .ranking-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .rank-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            margin-right: 1.5rem;
+            color: white;
+            background: var(--badge-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .rank-content {
+            flex: 1;
+        }
+
+        .rank-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .rank-score {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .rank-rating {
+            font-size: 1.2rem;
+            color: var(--gold);
+            white-space: nowrap;
+        }
+
+        .back-btn {
+            margin-top: 2rem;
+            background: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .subjects-grid { grid-template-columns: 1fr; }
+            .chapter-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NEET 2026</h1>
+        <div class="subtitle">Study Progress Tracker</div>
+    </header>
+
+    <div class="container">
+        <!-- Subject Selection Page -->
+        <div id="home-page" class="page-section active">
+            <div class="subjects-grid">
+                <div class="subject-card botany" onclick="selectSubject('botany')">
+                    <span class="subject-icon">🌿</span>
+                    <div class="subject-name">Botany</div>
+                    <div class="subject-desc">Plant Kingdom & Biology</div>
+                </div>
+                <div class="subject-card zoology" onclick="selectSubject('zoology')">
+                    <span class="subject-icon">🦋</span>
+                    <div class="subject-name">Zoology</div>
+                    <div class="subject-desc">Animal Kingdom & Biology</div>
+                </div>
+                <div class="subject-card physics" onclick="selectSubject('physics')">
+                    <span class="subject-icon">⚛️</span>
+                    <div class="subject-name">Physics</div>
+                    <div class="subject-desc">Matter, Energy & Forces</div>
+                </div>
+                <div class="subject-card chemistry" onclick="selectSubject('chemistry')">
+                    <span class="subject-icon">⚗️</span>
+                    <div class="subject-name">Chemistry</div>
+                    <div class="subject-desc">Elements & Reactions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter Selection Page -->
+        <div id="chapter-page" class="page-section">
+            <div class="chapter-selection">
+                <h2 id="subject-title"></h2>
+                <div id="chapter-list" class="chapter-list"></div>
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-secondary" onclick="goToHome()">Back</button>
+                    <button class="btn" onclick="startSurvey()" id="start-survey-btn" disabled>Start Daily Survey</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Survey Page -->
+        <div id="survey-page" class="page-section">
+            <div class="survey-container">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; text-align: center; margin-bottom: 3rem;">Daily Progress Survey</h2>
+                <div id="survey-questions"></div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-secondary" onclick="goToChapters()">Back</button>
+                    <button class="btn" onclick="submitSurvey()" id="submit-survey-btn" disabled>Submit Survey</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Page -->
+        <div id="progress-page" class="page-section">
+            <div class="progress-page">
+                <div class="progress-header">
+                    <h2>Your Progress Dashboard</h2>
+                    <p style="color: var(--text-secondary);">Track your journey to NEET 2026 success</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-chapters">0</div>
+                        <div class="stat-label">Chapters Covered</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avg-rating">0.0</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-sessions">0</div>
+                        <div class="stat-label">Study Sessions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="strong-chapters">0</div>
+                        <div class="stat-label">Strong Chapters</div>
+                    </div>
+                </div>
+
+                <div class="ranking-section">
+                    <h3 class="ranking-title">🏆 Strongest Subjects</h3>
+                    <div class="ranking-list" id="strongest-subjects"></div>
+                </div>
+
+                <div class="ranking-section">
+                    <h3 class="ranking-title">⭐ Strongest Chapters</h3>
+                    <div class="ranking-list" id="strongest-chapters"></div>
+                </div>
+
+                <div class="ranking-section">
+                    <h3 class="ranking-title">📚 Chapters to Improve</h3>
+                    <div class="ranking-list" id="weakest-chapters"></div>
+                </div>
+
+                <div class="ranking-section">
+                    <h3 class="ranking-title">🎯 Focus Areas</h3>
+                    <div class="ranking-list" id="focus-subjects"></div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn back-btn" onclick="goToHome()">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // NCERT Chapters Data
+        const chaptersData = {
+            botany: {
+                class11: [
+                    'The Living World',
+                    'Biological Classification',
+                    'Plant Kingdom',
+                    'Morphology of Flowering Plants',
+                    'Anatomy of Flowering Plants',
+                    'Cell: The Unit of Life',
+                    'Biomolecules',
+                    'Cell Cycle and Cell Division',
+                    'Transport in Plants',
+                    'Mineral Nutrition',
+                    'Photosynthesis in Higher Plants',
+                    'Respiration in Plants',
+                    'Plant Growth and Development'
+                ],
+                class12: [
+                    'Reproduction in Organisms',
+                    'Sexual Reproduction in Flowering Plants',
+                    'Molecular Basis of Inheritance',
+                    'Principles of Inheritance and Variation',
+                    'Evolution',
+                    'Strategies for Enhancement in Food Production',
+                    'Microbes in Human Welfare',
+                    'Biotechnology: Principles and Processes',
+                    'Biotechnology and its Applications',
+                    'Organisms and Populations',
+                    'Ecosystem',
+                    'Biodiversity and Conservation',
+                    'Environmental Issues'
+                ]
+            },
+            zoology: {
+                class11: [
+                    'Animal Kingdom',
+                    'Structural Organisation in Animals',
+                    'Digestion and Absorption',
+                    'Breathing and Exchange of Gases',
+                    'Body Fluids and Circulation',
+                    'Excretory Products and their Elimination',
+                    'Locomotion and Movement',
+                    'Neural Control and Coordination',
+                    'Chemical Coordination and Integration'
+                ],
+                class12: [
+                    'Reproduction in Organisms',
+                    'Human Reproduction',
+                    'Reproductive Health',
+                    'Molecular Basis of Inheritance',
+                    'Principles of Inheritance and Variation',
+                    'Evolution',
+                    'Human Health and Disease',
+                    'Strategies for Enhancement in Food Production',
+                    'Microbes in Human Welfare',
+                    'Biotechnology: Principles and Processes',
+                    'Biotechnology and its Applications',
+                    'Organisms and Populations',
+                    'Ecosystem',
+                    'Biodiversity and Conservation',
+                    'Environmental Issues'
+                ]
+            },
+            physics: {
+                class11: [
+                    'Physical World',
+                    'Units and Measurements',
+                    'Motion in a Straight Line',
+                    'Motion in a Plane',
+                    'Laws of Motion',
+                    'Work, Energy and Power',
+                    'System of Particles and Rotational Motion',
+                    'Gravitation',
+                    'Mechanical Properties of Solids',
+                    'Mechanical Properties of Fluids',
+                    'Thermal Properties of Matter',
+                    'Thermodynamics',
+                    'Kinetic Theory',
+                    'Oscillations',
+                    'Waves'
+                ],
+                class12: [
+                    'Electric Charges and Fields',
+                    'Electrostatic Potential and Capacitance',
+                    'Current Electricity',
+                    'Moving Charges and Magnetism',
+                    'Magnetism and Matter',
+                    'Electromagnetic Induction',
+                    'Alternating Current',
+                    'Electromagnetic Waves',
+                    'Ray Optics and Optical Instruments',
+                    'Wave Optics',
+                    'Dual Nature of Radiation and Matter',
+                    'Atoms',
+                    'Nuclei',
+                    'Semiconductor Electronics',
+                    'Communication Systems'
+                ]
+            },
+            chemistry: {
+                class11: [
+                    'Some Basic Concepts of Chemistry',
+                    'Structure of Atom',
+                    'Classification of Elements and Periodicity',
+                    'Chemical Bonding and Molecular Structure',
+                    'States of Matter',
+                    'Thermodynamics',
+                    'Equilibrium',
+                    'Redox Reactions',
+                    'Hydrogen',
+                    'The s-Block Elements',
+                    'The p-Block Elements',
+                    'Organic Chemistry - Basic Principles',
+                    'Hydrocarbons',
+                    'Environmental Chemistry'
+                ],
+                class12: [
+                    'The Solid State',
+                    'Solutions',
+                    'Electrochemistry',
+                    'Chemical Kinetics',
+                    'Surface Chemistry',
+                    'General Principles of Metallurgy',
+                    'The p-Block Elements',
+                    'The d and f Block Elements',
+                    'Coordination Compounds',
+                    'Haloalkanes and Haloarenes',
+                    'Alcohols, Phenols and Ethers',
+                    'Aldehydes, Ketones and Carboxylic Acids',
+                    'Amines',
+                    'Biomolecules',
+                    'Polymers',
+                    'Chemistry in Everyday Life'
+                ]
+            }
+        };
+
+        const surveyQuestions = [
+            {
+                id: 'understanding',
+                text: 'How well do you understand the concepts in this chapter?',
+                labels: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
+            },
+            {
+                id: 'problem_solving',
+                text: 'How confident are you in solving problems from this chapter?',
+                labels: ['Not Confident', 'Slightly Confident', 'Moderately Confident', 'Confident', 'Very Confident']
+            },
+            {
+                id: 'retention',
+                text: 'How well can you recall key facts and formulas?',
+                labels: ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent']
+            },
+            {
+                id: 'speed',
+                text: 'How quickly can you solve questions from this chapter?',
+                labels: ['Very Slow', 'Slow', 'Moderate', 'Fast', 'Very Fast']
+            },
+            {
+                id: 'revision_needed',
+                text: 'How much revision do you think this chapter needs?',
+                labels: ['Urgent', 'High', 'Moderate', 'Low', 'Minimal']
+            }
+        ];
+
+        let currentSubject = '';
+        let selectedChapters = [];
+        let surveyData = {};
+        let studyProgress = JSON.parse(localStorage.getItem('studyProgress')) || [];
+
+        function selectSubject(subject) {
+            currentSubject = subject;
+            selectedChapters = [];
+            document.getElementById('home-page').classList.remove('active');
+            document.getElementById('chapter-page').classList.add('active');
+            
+            const subjectTitle = document.getElementById('subject-title');
+            subjectTitle.textContent = subject.charAt(0).toUpperCase() + subject.slice(1);
+            subjectTitle.style.color = getSubjectColor(subject);
+            
+            renderChapters();
+        }
+
+        function getSubjectColor(subject) {
+            const colors = {
+                botany: '#2d5016',
+                zoology: '#8b4513',
+                physics: '#1a4d7a',
+                chemistry: '#6b2d5c'
+            };
+            return colors[subject];
+        }
+
+        function renderChapters() {
+            const chapterList = document.getElementById('chapter-list');
+            chapterList.innerHTML = '';
+            
+            const class11Chapters = chaptersData[currentSubject].class11;
+            const class12Chapters = chaptersData[currentSubject].class12;
+            
+            class11Chapters.forEach((chapter, index) => {
+                chapterList.appendChild(createChapterItem(chapter, 11, index));
+            });
+            
+            class12Chapters.forEach((chapter, index) => {
+                chapterList.appendChild(createChapterItem(chapter, 12, index + class11Chapters.length));
+            });
+        }
+
+        function createChapterItem(chapter, classNum, index) {
+            const div = document.createElement('div');
+            div.className = 'chapter-item';
+            div.style.color = getSubjectColor(currentSubject);
+            div.onclick = () => toggleChapter(index);
+            
+            div.innerHTML = `
+                <input type="checkbox" class="chapter-checkbox" id="chapter-${index}" onchange="toggleChapter(${index})">
+                <label class="chapter-label" for="chapter-${index}">${chapter}</label>
+                <span class="class-tag">Class ${classNum}</span>
+            `;
+            
+            return div;
+        }
+
+        function toggleChapter(index) {
+            const checkbox = document.getElementById(`chapter-${index}`);
+            const item = checkbox.parentElement;
+            
+            if (checkbox.checked) {
+                selectedChapters.push(index);
+                item.classList.add('selected');
+            } else {
+                selectedChapters = selectedChapters.filter(i => i !== index);
+                item.classList.remove('selected');
+            }
+            
+            document.getElementById('start-survey-btn').disabled = selectedChapters.length === 0;
+        }
+
+        function startSurvey() {
+            surveyData = {};
+            document.getElementById('chapter-page').classList.remove('active');
+            document.getElementById('survey-page').classList.add('active');
+            renderSurvey();
+        }
+
+        function renderSurvey() {
+            const container = document.getElementById('survey-questions');
+            container.innerHTML = '';
+            
+            surveyQuestions.forEach((question, qIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'survey-question';
+                
+                let starsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    starsHTML += `<span class="star" data-question="${question.id}" data-rating="${i}" onclick="rateStar('${question.id}', ${i})">★</span>`;
+                }
+                
+                questionDiv.innerHTML = `
+                    <div class="question-text">${qIndex + 1}. ${question.text}</div>
+                    <div class="star-rating" id="rating-${question.id}">${starsHTML}</div>
+                    <div class="rating-label" id="label-${question.id}">Select a rating</div>
+                `;
+                
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function rateStar(questionId, rating) {
+            surveyData[questionId] = rating;
+            
+            const stars = document.querySelectorAll(`[data-question="${questionId}"]`);
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            
+            const question = surveyQuestions.find(q => q.id === questionId);
+            const label = document.getElementById(`label-${questionId}`);
+            label.textContent = question.labels[rating - 1];
+            
+            document.getElementById('submit-survey-btn').disabled = 
+                Object.keys(surveyData).length !== surveyQuestions.length;
+        }
+
+        function submitSurvey() {
+            const allChapters = [...chaptersData[currentSubject].class11, ...chaptersData[currentSubject].class12];
+            
+            selectedChapters.forEach(chapterIndex => {
+                const entry = {
+                    date: new Date().toISOString(),
+                    subject: currentSubject,
+                    chapter: allChapters[chapterIndex],
+                    ratings: {...surveyData}
+                };
+                studyProgress.push(entry);
+            });
+            
+            localStorage.setItem('studyProgress', JSON.stringify(studyProgress));
+            
+            document.getElementById('survey-page').classList.remove('active');
+            document.getElementById('progress-page').classList.add('active');
+            renderProgress();
+        }
+
+        function renderProgress() {
+            if (studyProgress.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            calculateStats();
+            renderStrongestSubjects();
+            renderStrongestChapters();
+            renderWeakestChapters();
+            renderFocusAreas();
+        }
+
+        function calculateStats() {
+            const totalChapters = new Set(studyProgress.map(p => `${p.subject}-${p.chapter}`)).size;
+            document.getElementById('total-chapters').textContent = totalChapters;
+            
+            const allRatings = studyProgress.flatMap(p => Object.values(p.ratings));
+            const avgRating = allRatings.reduce((a, b) => a + b, 0) / allRatings.length;
+            document.getElementById('avg-rating').textContent = avgRating.toFixed(1);
+            
+            document.getElementById('total-sessions').textContent = studyProgress.length;
+            
+            const strongChapters = studyProgress.filter(p => {
+                const avg = Object.values(p.ratings).reduce((a, b) => a + b, 0) / 5;
+                return avg >= 4;
+            }).length;
+            document.getElementById('strong-chapters').textContent = strongChapters;
+        }
+
+        function renderStrongestSubjects() {
+            const subjectScores = {};
+            
+            studyProgress.forEach(entry => {
+                if (!subjectScores[entry.subject]) {
+                    subjectScores[entry.subject] = { total: 0, count: 0 };
+                }
+                const avg = Object.values(entry.ratings).reduce((a, b) => a + b, 0) / 5;
+                subjectScores[entry.subject].total += avg;
+                subjectScores[entry.subject].count += 1;
+            });
+            
+            const subjects = Object.keys(subjectScores).map(subject => ({
+                name: subject.charAt(0).toUpperCase() + subject.slice(1),
+                score: (subjectScores[subject].total / subjectScores[subject].count).toFixed(2),
+                count: subjectScores[subject].count
+            })).sort((a, b) => b.score - a.score).slice(0, 5);
+            
+            renderRankingList('strongest-subjects', subjects, 'subject');
+        }
+
+        function renderStrongestChapters() {
+            const chapterScores = {};
+            
+            studyProgress.forEach(entry => {
+                const key = `${entry.subject}-${entry.chapter}`;
+                if (!chapterScores[key]) {
+                    chapterScores[key] = { total: 0, count: 0, subject: entry.subject, chapter: entry.chapter };
+                }
+                const avg = Object.values(entry.ratings).reduce((a, b) => a + b, 0) / 5;
+                chapterScores[key].total += avg;
+                chapterScores[key].count += 1;
+            });
+            
+            const chapters = Object.values(chapterScores).map(ch => ({
+                name: ch.chapter,
+                subject: ch.subject,
+                score: (ch.total / ch.count).toFixed(2),
+                sessions: ch.count
+            })).sort((a, b) => b.score - a.score).slice(0, 5);
+            
+            renderRankingList('strongest-chapters', chapters, 'chapter');
+        }
+
+        function renderWeakestChapters() {
+            const chapterScores = {};
+            
+            studyProgress.forEach(entry => {
+                const key = `${entry.subject}-${entry.chapter}`;
+                if (!chapterScores[key]) {
+                    chapterScores[key] = { total: 0, count: 0, subject: entry.subject, chapter: entry.chapter };
+                }
+                const avg = Object.values(entry.ratings).reduce((a, b) => a + b, 0) / 5;
+                chapterScores[key].total += avg;
+                chapterScores[key].count += 1;
+            });
+            
+            const chapters = Object.values(chapterScores).map(ch => ({
+                name: ch.chapter,
+                subject: ch.subject,
+                score: (ch.total / ch.count).toFixed(2),
+                sessions: ch.count
+            })).sort((a, b) => a.score - b.score).slice(0, 5);
+            
+            renderRankingList('weakest-chapters', chapters, 'chapter');
+        }
+
+        function renderFocusAreas() {
+            const subjectScores = {};
+            
+            studyProgress.forEach(entry => {
+                if (!subjectScores[entry.subject]) {
+                    subjectScores[entry.subject] = { total: 0, count: 0 };
+                }
+                const avg = Object.values(entry.ratings).reduce((a, b) => a + b, 0) / 5;
+                subjectScores[entry.subject].total += avg;
+                subjectScores[entry.subject].count += 1;
+            });
+            
+            const subjects = Object.keys(subjectScores).map(subject => ({
+                name: subject.charAt(0).toUpperCase() + subject.slice(1),
+                score: (subjectScores[subject].total / subjectScores[subject].count).toFixed(2),
+                count: subjectScores[subject].count
+            })).sort((a, b) => a.score - b.score).slice(0, 5);
+            
+            renderRankingList('focus-subjects', subjects, 'focus');
+        }
+
+        function renderRankingList(containerId, items, type) {
+            const container = document.getElementById(containerId);
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>No data yet. Start tracking your progress!</p></div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            const colors = ['#d4af37', '#c0c0c0', '#cd7f32', '#6b8e23', '#708090'];
+            const badgeColors = ['#d4af37', '#c0c0c0', '#cd7f32', '#1a4d7a', '#6b2d5c'];
+            
+            items.forEach((item, index) => {
+                const opacity = 1 - (index * 0.12);
+                const div = document.createElement('div');
+                div.className = 'ranking-item';
+                div.style.setProperty('--item-color', colors[index] + '20');
+                div.style.setProperty('--badge-color', badgeColors[index]);
+                div.style.setProperty('--item-opacity', opacity);
+                
+                const stars = '★'.repeat(Math.round(item.score));
+                const emptyStars = '☆'.repeat(5 - Math.round(item.score));
+                
+                div.innerHTML = `
+                    <div class="rank-badge">${index + 1}</div>
+                    <div class="rank-content">
+                        <div class="rank-name">${item.name}</div>
+                        <div class="rank-score">${type === 'chapter' ? item.subject.charAt(0).toUpperCase() + item.subject.slice(1) + ' • ' : ''}${item.sessions || item.count} session${(item.sessions || item.count) > 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="rank-rating">${stars}${emptyStars} ${item.score}</div>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        function showEmptyState() {
+            ['strongest-subjects', 'strongest-chapters', 'weakest-chapters', 'focus-subjects'].forEach(id => {
+                document.getElementById(id).innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><p>Start your study sessions to see insights!</p></div>';
+            });
+        }
+
+        function goToHome() {
+            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
+            document.getElementById('home-page').classList.add('active');
+            selectedChapters = [];
+        }
+
+        function goToChapters() {
+            document.getElementById('survey-page').classList.remove('active');
+            document.getElementById('chapter-page').classList.add('active');
+        }
+
+        // Initialize
+        if (window.location.hash === '#progress') {
+            goToHome();
+            setTimeout(() => {
+                document.getElementById('home-page').classList.remove('active');
+                document.getElementById('progress-page').classList.add('active');
+                renderProgress();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
